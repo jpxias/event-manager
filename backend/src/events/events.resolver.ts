@@ -5,6 +5,10 @@ import { Types } from 'mongoose';
 import { Event } from './entities/event.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
+import { EventInvitationInput } from 'src/event-invitation/inputs/event-invitation.input';
+import { EventFilterInput } from './inputs/event-filter.input ';
 
 @Resolver('Event')
 export class EventsResolver {
@@ -12,28 +16,40 @@ export class EventsResolver {
 
   @Query(() => [Event])
   @UseGuards(JwtAuthGuard)
-  findAllEvents() {
-    return this.eventsService.findAll();
+  findAllEvents(
+    @Args('filter') filter: EventFilterInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventsService.findAllEvents(filter, user._id);
   }
 
   @Query(() => Event, { nullable: true })
-  findOneEvent(@Args('id', { type: () => ID }) id: Types.ObjectId) {
-    return this.eventsService.findById(id);
+  findOneEvent(
+    @Args('id', { type: () => ID }) id: Types.ObjectId,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventsService.findEventById(id, user._id);
   }
 
   @Mutation(() => Event)
   @UseGuards(JwtAuthGuard)
-  async createOrUpdateEvent(
-    @Args('updateEventInput') updateEventInput: CreateEventInput,
+  createOrUpdateEvent(
+    @Args('input') updateEventInput: CreateEventInput,
+    @CurrentUser() user: User,
   ) {
-    return this.eventsService.createOrUpdate(
+    return this.eventsService.createOrUpdateEvent(
       updateEventInput.id,
       updateEventInput,
+      user._id,
     );
   }
 
   @Mutation(() => Event)
-  removeEvent(@Args('id', { type: () => ID }) id: Types.ObjectId) {
-    return this.eventsService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  removeEvent(
+    @Args('id', { type: () => ID }) id: Types.ObjectId,
+    @CurrentUser() user: User,
+  ) {
+    return this.eventsService.removeEvent(id, user._id);
   }
 }

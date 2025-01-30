@@ -1,6 +1,6 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { EventInvitationService } from './event-invitation.service';
-import { AnswerInvitationInput } from './dto/answer-invitation.input';
+import { EventInvitationInput } from './inputs/event-invitation.input';
 import { EventInvitation } from './entities/event-invitation';
 
 @Resolver('EventInvitation')
@@ -10,12 +10,21 @@ export class EventInvitationResolver {
   ) {}
 
   @Mutation(() => EventInvitation)
+  findInvitationByEmail(
+    @Args('eventInvitation') createEventInput: EventInvitationInput,
+  ) {
+    return this.eventInvitationService.findEventInvitationByEmail(
+      createEventInput,
+    );
+  }
+
+  @Mutation(() => EventInvitation)
   createOrUpdateEventInvitation(
-    @Args('setEventInvitation') createEventInput: AnswerInvitationInput,
+    @Args('setEventInvitation') eventInvitationInput: EventInvitationInput,
   ) {
     return this.eventInvitationService.createOrUpdate(
-      createEventInput.id,
-      createEventInput,
+      eventInvitationInput.id,
+      eventInvitationInput,
     );
   }
 }

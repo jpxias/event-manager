@@ -9,7 +9,7 @@ export class UsersService {
   constructor(@InjectModel(User.name) private readonly user: Model<User>) {}
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.user.findOne({ username });
+    return this.user.findOne({ username }).exec();
   }
 
   async createUser(user: CreateUserInput): Promise<User | null> {

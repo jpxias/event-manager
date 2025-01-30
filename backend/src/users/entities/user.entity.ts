@@ -1,11 +1,14 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 @Schema()
 @ObjectType()
 export class User extends Document {
+  @Field(() => ID)
+  _id: Types.ObjectId;
+
   @Field(() => String)
   @Prop({ required: true, unique: true })
   username: string;

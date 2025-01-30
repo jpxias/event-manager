@@ -1,9 +1,9 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum InvitationAnswer {
-  NO = 0,
   YES = 1,
-  MAYBE = 2,
+  NO = 2,
+  MAYBE = 3,
 }
 
 registerEnumType(InvitationAnswer, {

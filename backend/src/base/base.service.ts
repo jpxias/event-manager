@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 
 export class BaseService<T> {
@@ -21,12 +22,22 @@ export class BaseService<T> {
       .exec();
   }
 
-  findAll(): Promise<T[]> {
-    return this.model.find().exec();
+  findOne(filters: Partial<T>) {
+    return this.model.findOne(filters).exec();
   }
 
-  findById(id: Types.ObjectId): Promise<T | null> {
-    return this.model.findById(id).exec();
+  findAll(filters: Partial<T> = {}): Promise<T[]> {
+    return this.model.find(filters).exec();
+  }
+
+  async findById(id: Types.ObjectId): Promise<T | null> {
+    const item = await this.model.findById(id).exec();
+
+    if (!item) {
+      throw new NotFoundException(`This item could not be found`);
+    }
+
+    return item;
   }
 
   remove(id: Types.ObjectId) {

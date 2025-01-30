@@ -1,10 +1,10 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 import { EventInvitation } from '../entities/event-invitation';
-import { InvitationAnswer } from '../enum/InvitationAnswer.enum';
+import { InvitationAnswer } from '../enums/InvitationAnswer.enum';
 
 @InputType()
-export class AnswerInvitationInput implements Partial<EventInvitation> {
+export class EventInvitationInput implements Partial<EventInvitation> {
   @Field(() => ID, { nullable: true })
   id: Types.ObjectId;
 

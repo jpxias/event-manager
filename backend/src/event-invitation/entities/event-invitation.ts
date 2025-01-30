@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongoSchema, Types } from 'mongoose';
 import { Event } from '../../events/entities/event.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { InvitationAnswer } from '../enum/InvitationAnswer.enum';
+import { InvitationAnswer } from '../enums/InvitationAnswer.enum';
 
 @Schema()
 @ObjectType()
@@ -11,7 +11,7 @@ export class EventInvitation extends Document {
   @Prop({ type: MongoSchema.Types.ObjectId, ref: Event.name, required: true })
   event: Types.ObjectId;
 
-  @Field()
+  @Field(() => String)
   @Prop({ type: String, required: true })
   email: string;
 
