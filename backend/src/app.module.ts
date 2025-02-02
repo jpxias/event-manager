@@ -9,7 +9,10 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017'),
+    // MongooseModule.forRoot(
+    //   'mongodb://root:password@mongodb:27017/event-manager?authSource=admin',
+    // ),
+    MongooseModule.forRoot('mongodb://localhost:27017/test'),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: 'schema.gql',
       driver: ApolloDriver,

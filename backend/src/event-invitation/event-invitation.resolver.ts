@@ -12,7 +12,7 @@ export class EventInvitationResolver {
     private readonly eventInvitationService: EventInvitationService,
   ) {}
 
-  @Query(() => EventInvitation)
+  @Query(() => EventInvitation, { nullable: true })
   findOneEventInvitationByEmail(
     @Args('eventInvitation') createEventInput: EventInvitationFilterInput,
   ) {
@@ -35,7 +35,7 @@ export class EventInvitationResolver {
   createOrUpdateEventInvitation(
     @Args('setEventInvitation') eventInvitationInput: EventInvitationInput,
   ) {
-    return this.eventInvitationService.createOrUpdate(
+    return this.eventInvitationService.createOrUpdateInvitation(
       eventInvitationInput.id,
       eventInvitationInput,
     );

@@ -8,7 +8,7 @@ interface GraphQLContextType {
     queryFunction: (variables: any, headers: any) => Promise<T>,
     variables: any,
     isAuth: boolean,
-    successMessage?: string
+    successMessage?: string | undefined
   ) => Promise<T | null>;
 }
 
@@ -24,7 +24,7 @@ export const GraphQLProvider = ({ children }: IGraphQlProviderProps) => {
     queryFunction: (variables: any, headers: any) => Promise<T>,
     variables: any = {},
     isAuth: boolean,
-    successMessage: string
+    successMessage: string | undefined
   ): Promise<T | null> => {
     try {
       let headers = {};
@@ -41,17 +41,21 @@ export const GraphQLProvider = ({ children }: IGraphQlProviderProps) => {
 
       return response;
     } catch (error: any) {
-      const errorMessage = error?.response?.errors?.[0]?.message || error.message || "An error occoured, please contact the administrator.";
+      const errorMessage = error?.response?.errors?.[0]?.message || error.message;
 
       if (error?.response?.errors?.[0]?.extensions.code === "UNAUTHENTICATED") {
         logout();
         navigate("/login");
-        enqueueSnackbar("Session expired. Logging out.", { variant: "warning", autoHideDuration: 3000 });
+        enqueueSnackbar("Session expired. Logging out.", { variant: "warning", autoHideDuration: 2000 });
+      } else if (error?.response?.errors?.[0]?.extensions.status === 404) {
+        navigate("/not-found");
+      } else if (errorMessage) {
+        enqueueSnackbar(errorMessage, { variant: "warning", autoHideDuration: 2000 });
       } else {
-        enqueueSnackbar(errorMessage, { variant: "error" });
+        enqueueSnackbar("An error occoured, please contact the administrator.", { variant: "error", autoHideDuration: 2000 });
       }
 
-      return null;
+      throw error;
     }
   };
 

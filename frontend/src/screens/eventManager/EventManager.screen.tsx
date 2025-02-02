@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import CreateEventModal from "../../components/CreateEventModal/CreateEventModal.component";
 import EventCard from "../../components/EventCard/EventCard.component";
+import TopBar from "../../components/TopBar/TopBar";
 import { useAuthContext } from "../../contexts/Auth.context";
 import { useGraphQL } from "../../contexts/GraphQl.context";
 import { Event } from "../../generated/graphql";
@@ -9,7 +10,6 @@ import { GraphQlSdk } from "../../graphql/GraphQlClient";
 import "./EventManager.css";
 
 const EventManagerScreen = () => {
-  const { FindAllEvents } = GraphQlSdk;
   const { token } = useAuthContext();
   const [events, setEvents] = useState<Event[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -20,21 +20,18 @@ const EventManagerScreen = () => {
   const fetchAllEvents = async () => {
     const data = await graphqlRequest(GraphQlSdk.FindAllEvents, { filter: {} }, true);
     if (data) setEvents(data.findAllEvents);
-    // if (token) {
-    //   FindAllEvents({ filter: {} }, { Authorization: token }).then((res) => {
-    //     setEvents(res.findAllEvents);
-    //   });
-    // }
+  };
+
+  const onClickDelete = async (event: Event) => {
+    await graphqlRequest(GraphQlSdk.RemoveEvent, { id: event.id }, true, "The event has been deleted");
+    fetchAllEvents();
   };
 
   useEffect(() => {
     fetchAllEvents();
   }, [token]);
 
-  const editEvent = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, event: Event | null) => {
-    e.stopPropagation();
-    e.preventDefault();
-
+  const editEvent = (event: Event | null) => {
     setViewOnly(false);
     setSelectedEvent(event);
     setModalOpen(true);
@@ -60,13 +57,16 @@ const EventManagerScreen = () => {
       />
 
       <div className="event-container">
-        <h3>Event Manager</h3>
-        <Button variant="contained" onClick={(e) => editEvent(e, null)}>
-          Schedule new event
-        </Button>
+        <TopBar />
+        <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
+          <Button variant="contained" onClick={() => editEvent(null)} style={{ margin: 20 }}>
+            New event
+          </Button>
+        </div>
+
         <div className="event-cards-container">
           {events.map((event) => (
-            <EventCard key={event.id} event={event} onClickCard={viewEvent} onClickEdit={editEvent} />
+            <EventCard key={event.id} event={event} onClickDelete={onClickDelete} onClickCard={viewEvent} onClickEdit={editEvent} />
           ))}
         </div>
       </div>

@@ -14,7 +14,8 @@ type Event {
   description: String
   startDate: DateTime!
   endDate: DateTime!
-  user: ID!
+  freezed: Boolean
+  user: ID
 }
 
 """
@@ -38,8 +39,8 @@ enum InvitationAnswer {
 
 type Query {
   findAllEvents(filter: EventFilterInput!): [Event!]!
-  findOneEvent(id: ID!): Event
-  findOneEventInvitationByEmail(eventInvitation: EventInvitationFilterInput!): EventInvitation!
+  findEventById(id: ID!): Event
+  findOneEventInvitationByEmail(eventInvitation: EventInvitationFilterInput!): EventInvitation
   findEventInvitationsByEvent(eventInvitation: EventInvitationFilterInput!): [EventInvitation!]!
 }
 
@@ -76,6 +77,7 @@ input CreateEventInput {
   description: String
   startDate: DateTime!
   endDate: DateTime!
+  freezed: Boolean
 }
 
 input EventInvitationInput {

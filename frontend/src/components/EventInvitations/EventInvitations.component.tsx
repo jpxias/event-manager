@@ -1,7 +1,6 @@
 import Person from "@mui/icons-material/Person";
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useAuthContext } from "../../contexts/Auth.context";
 import { useGraphQL } from "../../contexts/GraphQl.context";
 import { Event, EventInvitation } from "../../generated/graphql";
 import { GraphQlSdk } from "../../graphql/GraphQlClient";
@@ -11,9 +10,7 @@ interface IEventInvitationsProps {
 }
 
 const EventInvitations = ({ event }: IEventInvitationsProps) => {
-  const { token } = useAuthContext();
   const [eventInvitations, setEventInvitations] = useState<EventInvitation[]>();
-  const { FindEventInvitationsByEvent } = GraphQlSdk;
   const { graphqlRequest } = useGraphQL();
 
   const fetchEventInvitations = async () => {
@@ -28,20 +25,27 @@ const EventInvitations = ({ event }: IEventInvitationsProps) => {
   }, [event]);
 
   return (
-    <div>
-      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-        {eventInvitations?.map((eventInvitation) => (
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <Person />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={eventInvitation.email} secondary={eventInvitation.answer} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+    <>
+      {!!eventInvitations?.length && (
+        <div>
+          <List sx={{ width: "100%", maxWidth: 300, bgcolor: "background.paper", overflow: "auto", maxHeight: 500 }}>
+            <Typography variant="h6" style={{ textAlign: "center" }}>
+              Invitation list
+            </Typography>
+            {eventInvitations?.map((eventInvitation) => (
+              <ListItem key={eventInvitation.id}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <Person />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={eventInvitation.email} secondary={eventInvitation.answer} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
+      )}
+    </>
   );
 };
 

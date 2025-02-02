@@ -29,7 +29,7 @@ export class EventsService extends BaseService<Event> {
   async findEventById(id: Types.ObjectId, userId: Types.ObjectId) {
     const event = await this.findById(id);
 
-    if (event?.user !== userId) {
+    if (event?.user.toString() !== userId.toString()) {
       throw new ForbiddenException();
     }
 

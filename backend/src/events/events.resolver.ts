@@ -1,14 +1,13 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
-import { EventsService } from './events.service';
-import { CreateEventInput } from './inputs/event.input';
-import { Types } from 'mongoose';
-import { Event } from './entities/event.entity';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Types } from 'mongoose';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/users/entities/user.entity';
-import { EventInvitationInput } from 'src/event-invitation/inputs/event-invitation.input';
+import { Event } from './entities/event.entity';
+import { EventsService } from './events.service';
 import { EventFilterInput } from './inputs/event-filter.input ';
+import { CreateEventInput } from './inputs/event.input';
 
 @Resolver('Event')
 export class EventsResolver {
@@ -24,11 +23,8 @@ export class EventsResolver {
   }
 
   @Query(() => Event, { nullable: true })
-  findOneEvent(
-    @Args('id', { type: () => ID }) id: Types.ObjectId,
-    @CurrentUser() user: User,
-  ) {
-    return this.eventsService.findEventById(id, user._id);
+  findEventById(@Args('id', { type: () => ID }) id: Types.ObjectId) {
+    return this.eventsService.findById(id);
   }
 
   @Mutation(() => Event)

@@ -18,4 +18,7 @@ export class CreateEventInput implements Partial<Event> {
 
   @Field(() => Date)
   endDate: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  freezed?: Boolean;
 }

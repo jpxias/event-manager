@@ -1,7 +1,9 @@
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, Button, IconButton, Modal, TextField } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { Box, Button, FormControlLabel, IconButton, InputAdornment, Modal, Switch, TextField } from "@mui/material";
 import { format } from "date-fns";
 import { useFormik } from "formik";
+import { enqueueSnackbar } from "notistack";
 import { useEffect } from "react";
 import { useGraphQL } from "../../contexts/GraphQl.context";
 import { Event } from "../../generated/graphql";
@@ -20,6 +22,15 @@ interface ICreateEventModalProps {
 
 const CreateEventModal = ({ open, handleClose, event, handleSubmit, viewOnly }: ICreateEventModalProps) => {
   const { graphqlRequest } = useGraphQL();
+
+  const changeEventFreeze = async (e: any) => {
+    if (event) {
+      const data = await graphqlRequest(GraphQlSdk.CreateOrUpdateEvent, { input: { ...event, freezed: e.target.checked } }, true);
+      if (data) {
+        formik.setFieldValue("freezed", data.createOrUpdateEvent.freezed);
+      }
+    }
+  };
 
   const formik = useFormik({
     initialValues: eventInitialValues,
@@ -41,6 +52,8 @@ const CreateEventModal = ({ open, handleClose, event, handleSubmit, viewOnly }: 
   };
 
   useEffect(() => {
+    formik.resetForm();
+
     if (event) {
       event = event as Event;
 
@@ -50,11 +63,20 @@ const CreateEventModal = ({ open, handleClose, event, handleSubmit, viewOnly }: 
         description: event.description ?? "",
         startDate: formatDate(event.startDate),
         endDate: formatDate(event.endDate),
+        freezed: event.freezed || false,
       });
     } else {
       formik.setValues(eventInitialValues);
     }
   }, [event]);
+
+  const shareableLink = `http://localhost:5173/invitation/${event?.id}`;
+
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(shareableLink).then(() => {
+      enqueueSnackbar("Link copied to clipboard");
+    });
+  };
 
   return (
     <Modal open={open} onClose={handleClose} aria-labelledby="Create new event">
@@ -76,6 +98,7 @@ const CreateEventModal = ({ open, handleClose, event, handleSubmit, viewOnly }: 
               label="Event Name"
               name="name"
               value={formik.values.name}
+              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.name && Boolean(formik.errors.name)}
@@ -101,32 +124,62 @@ const CreateEventModal = ({ open, handleClose, event, handleSubmit, viewOnly }: 
               name="startDate"
               type="datetime-local"
               value={formik.values.startDate}
+              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.startDate && Boolean(formik.errors.startDate)}
               helperText={formik.touched.startDate && formik.errors.startDate}
               fullWidth
-              slotProps={defaultSlotProps}
+              slotProps={{ ...defaultSlotProps, inputLabel: { shrink: true } }}
             />
             <TextField
               label="End Date"
               name="endDate"
               type="datetime-local"
               value={formik.values.endDate}
+              required
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-              helperText={formik.touched.endDate && formik.errors.endDate}
+              helperText={formik.touched && formik.errors.endDate}
               fullWidth
-              slotProps={defaultSlotProps}
+              slotProps={{ ...defaultSlotProps, inputLabel: { shrink: true } }}
             />
+            {viewOnly && (
+              <>
+                <TextField
+                  label="Shareable link"
+                  variant="outlined"
+                  fullWidth
+                  value={shareableLink}
+                  slotProps={{
+                    input: {
+                      ...defaultSlotProps,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleCopyClick} color="primary">
+                            <ContentCopyIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+
+                <FormControlLabel
+                  control={<Switch name="freezed" checked={formik.values.freezed} onChange={changeEventFreeze} />}
+                  label="Freeze Event"
+                />
+              </>
+            )}
+
             {!viewOnly && (
               <Button type="submit" variant="contained" color="primary">
                 Submit
               </Button>
             )}
           </div>
-          <EventInvitations event={event as Event} />
+          {viewOnly && <EventInvitations event={event as Event} />}
         </div>
       </Box>
     </Modal>

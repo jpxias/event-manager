@@ -22,6 +22,7 @@ export type Scalars = {
 export type CreateEventInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   endDate: Scalars['DateTime']['input'];
+  freezed?: InputMaybe<Scalars['Boolean']['input']>;
   id?: InputMaybe<Scalars['ID']['input']>;
   name: Scalars['String']['input'];
   startDate: Scalars['DateTime']['input'];
@@ -36,10 +37,11 @@ export type Event = {
   __typename?: 'Event';
   description?: Maybe<Scalars['String']['output']>;
   endDate: Scalars['DateTime']['output'];
+  freezed?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   startDate: Scalars['DateTime']['output'];
-  user: Scalars['ID']['output'];
+  user?: Maybe<Scalars['ID']['output']>;
 };
 
 export type EventFilterInput = {
@@ -116,8 +118,8 @@ export type MutationRemoveEventArgs = {
 export type Query = {
   __typename?: 'Query';
   findAllEvents: Array<Event>;
+  findEventById?: Maybe<Event>;
   findEventInvitationsByEvent: Array<EventInvitation>;
-  findOneEvent?: Maybe<Event>;
   findOneEventInvitationByEmail: EventInvitation;
 };
 
@@ -127,13 +129,13 @@ export type QueryFindAllEventsArgs = {
 };
 
 
-export type QueryFindEventInvitationsByEventArgs = {
-  eventInvitation: EventInvitationFilterInput;
+export type QueryFindEventByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryFindOneEventArgs = {
-  id: Scalars['ID']['input'];
+export type QueryFindEventInvitationsByEventArgs = {
+  eventInvitation: EventInvitationFilterInput;
 };
 
 
@@ -182,28 +184,28 @@ export type FindAllEventsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllEventsQuery = { __typename?: 'Query', findAllEvents: Array<{ __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, user: string }> };
+export type FindAllEventsQuery = { __typename?: 'Query', findAllEvents: Array<{ __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, freezed?: boolean | null }> };
 
-export type FindOneEventQueryVariables = Exact<{
+export type FindEventByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type FindOneEventQuery = { __typename?: 'Query', findOneEvent?: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, user: string } | null };
+export type FindEventByIdQuery = { __typename?: 'Query', findEventById?: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, freezed?: boolean | null } | null };
 
 export type CreateOrUpdateEventMutationVariables = Exact<{
   input: CreateEventInput;
 }>;
 
 
-export type CreateOrUpdateEventMutation = { __typename?: 'Mutation', createOrUpdateEvent: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, user: string } };
+export type CreateOrUpdateEventMutation = { __typename?: 'Mutation', createOrUpdateEvent: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, freezed?: boolean | null } };
 
 export type RemoveEventMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type RemoveEventMutation = { __typename?: 'Mutation', removeEvent: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, user: string } };
+export type RemoveEventMutation = { __typename?: 'Mutation', removeEvent: { __typename?: 'Event', id: string, name: string, description?: string | null, startDate: any, endDate: any, freezed?: boolean | null } };
 
 
 export const LoginDocument = gql`
@@ -249,19 +251,19 @@ export const FindAllEventsDocument = gql`
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
     `;
-export const FindOneEventDocument = gql`
-    query FindOneEvent($id: ID!) {
-  findOneEvent(id: $id) {
+export const FindEventByIdDocument = gql`
+    query FindEventById($id: ID!) {
+  findEventById(id: $id) {
     id
     name
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
     `;
@@ -273,7 +275,7 @@ export const CreateOrUpdateEventDocument = gql`
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
     `;
@@ -285,7 +287,7 @@ export const RemoveEventDocument = gql`
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
     `;
@@ -312,8 +314,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FindAllEvents(variables: FindAllEventsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FindAllEventsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FindAllEventsQuery>(FindAllEventsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FindAllEvents', 'query', variables);
     },
-    FindOneEvent(variables: FindOneEventQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FindOneEventQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<FindOneEventQuery>(FindOneEventDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FindOneEvent', 'query', variables);
+    FindEventById(variables: FindEventByIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FindEventByIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<FindEventByIdQuery>(FindEventByIdDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FindEventById', 'query', variables);
     },
     CreateOrUpdateEvent(variables: CreateOrUpdateEventMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateOrUpdateEventMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateOrUpdateEventMutation>(CreateOrUpdateEventDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateOrUpdateEvent', 'mutation', variables);

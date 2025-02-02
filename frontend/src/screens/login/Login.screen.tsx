@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Button, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useAuthContext } from "../../contexts/Auth.context";
 import "./Login.css";
@@ -14,7 +14,6 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const onSubmit = () => {
-    console.log("iowajdosjaoiasd");
     if (login && loginData?.username && loginData.password) login(loginData?.username, loginData?.password);
   };
 
@@ -25,7 +24,7 @@ const LoginScreen = () => {
   return (
     <div className="login-container">
       <div className="form-container">
-        <h3>Event Management</h3>
+        <Typography variant="h4">Event Management</Typography>
         <TextField label="Username" onChange={(ev: any) => onChangeLoginData("username", ev)} id="username" />
         <TextField
           label="Password"

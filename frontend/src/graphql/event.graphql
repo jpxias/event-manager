@@ -5,18 +5,18 @@ query FindAllEvents($filter: EventFilterInput!) {
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
 
-query FindOneEvent($id: ID!) {
-  findOneEvent(id: $id) {
+query FindEventById($id: ID!) {
+  findEventById(id: $id) {
     id
     name
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
 
@@ -27,7 +27,7 @@ mutation CreateOrUpdateEvent($input: CreateEventInput!) {
     description
     startDate
     endDate
-    user
+    freezed
   }
 }
 
@@ -38,6 +38,6 @@ mutation RemoveEvent($id: ID!) {
     description
     startDate
     endDate
-    user
+    freezed
   }
 }

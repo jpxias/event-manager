@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from "notistack";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useLocalStorageState from "use-local-storage-state";
@@ -32,10 +33,15 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   const navigate = useNavigate();
 
   const login = (username: string, password: string): void => {
-    Login({ username, password }).then((res) => {
-      setToken(`Bearer ${res.login}`);
-      navigate("/");
-    });
+    Login({ username, password })
+      .then((res) => {
+        setToken(`Bearer ${res.login}`);
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorMessage = error?.response?.errors?.[0]?.message || error.message || "An error occoured, please contact the administrator.";
+        enqueueSnackbar(errorMessage, { variant: "warning" });
+      });
   };
 
   const logout = () => {
