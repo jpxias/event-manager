@@ -2,9 +2,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { Event } from './entities/event.entity';
 import { BaseService } from 'src/base/base.service';
-import { EventInvitationInput } from 'src/event-invitation/inputs/event-invitation.input';
+import { Event } from './entities/event.entity';
 import { EventFilterInput } from './inputs/event-filter.input ';
 
 @Injectable()
@@ -37,8 +36,8 @@ export class EventsService extends BaseService<Event> {
     return event;
   }
 
-  async removeEvent(id: Types.ObjectId, userId?: Types.ObjectId) {
-    await this.findById(id);
+  async removeEvent(id: Types.ObjectId, userId: Types.ObjectId) {
+    await this.findEventById(id, userId);
     return this.remove(id);
   }
 }

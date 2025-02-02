@@ -1,0 +1,25 @@
+query FindInvitationByEmail($eventInvitation: EventInvitationFilterInput!) {
+  findOneEventInvitationByEmail(eventInvitation: $eventInvitation) {
+    id
+    email
+    answer
+    event
+  }
+}
+
+mutation CreateOrUpdateEventInvitation($setEventInvitation: EventInvitationInput!) {
+  createOrUpdateEventInvitation(setEventInvitation: $setEventInvitation) {
+    id
+    email
+    answer
+    event
+  }
+}
+query FindEventInvitationsByEvent($eventInvitation: EventInvitationFilterInput!) {
+  findEventInvitationsByEvent(eventInvitation: $eventInvitation) {
+    id
+    email
+    answer
+    event
+  }
+}

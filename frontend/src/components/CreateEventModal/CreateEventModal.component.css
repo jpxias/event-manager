@@ -1,0 +1,30 @@
+.create-event-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 400px;
+  width: 50%;
+  background-color: var(--background-paper, white);
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.create-event-form {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  flex-direction: column;
+}
+
+.create-event-form-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.close-modal-icon {
+  position: absolute !important;
+  top: 0px;
+  right: 10px;
+}

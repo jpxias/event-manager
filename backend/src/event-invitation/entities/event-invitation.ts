@@ -1,13 +1,16 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongoSchema, Types } from 'mongoose';
 import { Event } from '../../events/entities/event.entity';
-import { Field, ObjectType } from '@nestjs/graphql';
 import { InvitationAnswer } from '../enums/InvitationAnswer.enum';
 
 @Schema()
 @ObjectType()
 export class EventInvitation extends Document {
-  @Field(() => String)
+  @Field(() => ID)
+  id: Types.ObjectId;
+
+  @Field(() => ID, { nullable: true })
   @Prop({ type: MongoSchema.Types.ObjectId, ref: Event.name, required: true })
   event: Types.ObjectId;
 

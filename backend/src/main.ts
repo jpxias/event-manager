@@ -7,6 +7,12 @@ async function bootstrap() {
 
   app.use(passport.initialize());
 
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET, POST, OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

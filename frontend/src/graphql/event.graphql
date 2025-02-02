@@ -1,0 +1,43 @@
+query FindAllEvents($filter: EventFilterInput!) {
+  findAllEvents(filter: $filter) {
+    id
+    name
+    description
+    startDate
+    endDate
+    user
+  }
+}
+
+query FindOneEvent($id: ID!) {
+  findOneEvent(id: $id) {
+    id
+    name
+    description
+    startDate
+    endDate
+    user
+  }
+}
+
+mutation CreateOrUpdateEvent($input: CreateEventInput!) {
+  createOrUpdateEvent(input: $input) {
+    id
+    name
+    description
+    startDate
+    endDate
+    user
+  }
+}
+
+mutation RemoveEvent($id: ID!) {
+  removeEvent(id: $id) {
+    id
+    name
+    description
+    startDate
+    endDate
+    user
+  }
+}

@@ -1,0 +1,86 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  _id: ID!
+  username: String!
+  password: String!
+}
+
+type Event {
+  id: ID!
+  name: String!
+  description: String
+  startDate: DateTime!
+  endDate: DateTime!
+  user: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type EventInvitation {
+  id: ID!
+  event: ID
+  email: String!
+  answer: InvitationAnswer!
+}
+
+"""Possible answers to an event invitation"""
+enum InvitationAnswer {
+  YES
+  NO
+  MAYBE
+}
+
+type Query {
+  findAllEvents(filter: EventFilterInput!): [Event!]!
+  findOneEvent(id: ID!): Event
+  findOneEventInvitationByEmail(eventInvitation: EventInvitationFilterInput!): EventInvitation!
+  findEventInvitationsByEvent(eventInvitation: EventInvitationFilterInput!): [EventInvitation!]!
+}
+
+input EventFilterInput {
+  name: String
+  description: String
+  startDate: DateTime
+  endDate: DateTime
+  user: ID
+}
+
+input EventInvitationFilterInput {
+  event: ID
+  email: String
+  answer: InvitationAnswer
+}
+
+type Mutation {
+  login(username: String!, password: String!): String!
+  createUser(createUserInput: CreateUserInput!): User!
+  createOrUpdateEvent(input: CreateEventInput!): Event!
+  removeEvent(id: ID!): Event!
+  createOrUpdateEventInvitation(setEventInvitation: EventInvitationInput!): EventInvitation!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+}
+
+input CreateEventInput {
+  id: ID
+  name: String!
+  description: String
+  startDate: DateTime!
+  endDate: DateTime!
+}
+
+input EventInvitationInput {
+  id: ID
+  event: ID!
+  email: String!
+  answer: InvitationAnswer!
+}

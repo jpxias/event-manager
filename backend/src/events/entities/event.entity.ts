@@ -6,6 +6,9 @@ import { User } from 'src/users/entities/user.entity';
 @Schema()
 @ObjectType()
 export class Event extends Document {
+  @Field(() => ID)
+  id: Types.ObjectId;
+
   @Field(() => String)
   @Prop({ required: true })
   name: string;

@@ -1,0 +1,10 @@
+schema: "../backend/schema.gql"
+documents: "./src/graphql/*.graphql"
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"
+    config:
+      rawRequest: false
