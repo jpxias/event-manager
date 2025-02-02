@@ -5,6 +5,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as Yup from "yup";
+import SuccessComponent from "../../components/EventInvitations/Success.component";
 import { useGraphQL } from "../../contexts/GraphQl.context";
 import { Event } from "../../generated/graphql";
 import { GraphQlSdk } from "../../graphql/GraphQlClient";
@@ -24,6 +25,7 @@ const EventInvitationScreen = () => {
   const { graphqlRequest } = useGraphQL();
   const { id } = useParams();
   const [event, setEvent] = useState<Event | null>();
+  const [eventAnswered, setEventAnswered] = useState<boolean>(false);
 
   const fetchEvent = async () => {
     const data = await graphqlRequest(GraphQlSdk.FindEventById, { id }, false);
@@ -49,6 +51,8 @@ const EventInvitationScreen = () => {
       false,
       "Success"
     );
+
+    setEventAnswered(true);
   };
 
   useEffect(() => {
@@ -56,57 +60,62 @@ const EventInvitationScreen = () => {
   }, []);
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-      {({ values, setFieldValue }) => (
-        <Box sx={{ maxWidth: 500, margin: "auto", padding: 2 }}>
-          <div className="invitation-info-container">
-            <Typography variant="h4">{event?.name}</Typography>
-            <Typography>{event?.description}</Typography>
-            <div className="invitation-dates-container">
-              <Typography>Starts on {event?.startDate} </Typography>
-              <Typography>Ends on {event?.endDate} </Typography>
-            </div>
-          </div>
+    <>
+      {!eventAnswered && (
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+          {({ values, setFieldValue }) => (
+            <Box sx={{ maxWidth: 500, margin: "auto", padding: 2 }}>
+              <div className="invitation-info-container">
+                <Typography variant="h4">{event?.name}</Typography>
+                <Typography>{event?.description}</Typography>
+                <div className="invitation-dates-container">
+                  <Typography>Starts on {event?.startDate} </Typography>
+                  <Typography>Ends on {event?.endDate} </Typography>
+                </div>
+              </div>
 
-          <Form>
-            <Field
-              name="email"
-              type="email"
-              label="Email"
-              fullWidth
-              variant="outlined"
-              as={TextField}
-              helperText={<ErrorMessage name="email" />}
-              error={!values.email}
-              sx={{ marginBottom: 2 }}
-            />
+              <Form>
+                <Field
+                  name="email"
+                  type="email"
+                  label="Email"
+                  fullWidth
+                  variant="outlined"
+                  as={TextField}
+                  helperText={<ErrorMessage name="email" />}
+                  error={!values.email}
+                  sx={{ marginBottom: 2 }}
+                />
 
-            <Box sx={{ marginBottom: 2 }}>
-              <Typography>Answer</Typography>
-              <ToggleButtonGroup
-                value={values.answer}
-                exclusive
-                onChange={(_, newValue) => setFieldValue("answer", newValue)}
-                fullWidth
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <ToggleButton value="YES">Yes</ToggleButton>
-                <ToggleButton value="NO">No</ToggleButton>
-                <ToggleButton value="MAYBE">Maybe</ToggleButton>
-              </ToggleButtonGroup>
-              <ErrorMessage name="answer" />
+                <Box sx={{ marginBottom: 2 }}>
+                  <Typography>Answer</Typography>
+                  <ToggleButtonGroup
+                    value={values.answer}
+                    exclusive
+                    onChange={(_, newValue) => setFieldValue("answer", newValue)}
+                    fullWidth
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ToggleButton value="YES">Yes</ToggleButton>
+                    <ToggleButton value="NO">No</ToggleButton>
+                    <ToggleButton value="MAYBE">Maybe</ToggleButton>
+                  </ToggleButtonGroup>
+                  <ErrorMessage name="answer" />
+                </Box>
+
+                <Button type="submit" variant="contained" fullWidth>
+                  Confirm
+                </Button>
+              </Form>
             </Box>
-
-            <Button type="submit" variant="contained" fullWidth>
-              Confirm
-            </Button>
-          </Form>
-        </Box>
+          )}
+        </Formik>
       )}
-    </Formik>
+      {eventAnswered && <SuccessComponent />}
+    </>
   );
 };
 

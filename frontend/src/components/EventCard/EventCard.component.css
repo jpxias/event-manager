@@ -1,5 +1,4 @@
 .event-card {
-  height: 350px !important;
   width: 400px;
-  cursor: pointer;
+  height: fit-content !important;
 }

@@ -30,7 +30,7 @@ const EventInvitations = ({ event }: IEventInvitationsProps) => {
         <div>
           <List sx={{ width: "100%", maxWidth: 300, bgcolor: "background.paper", overflow: "auto", maxHeight: 500 }}>
             <Typography variant="h6" style={{ textAlign: "center" }}>
-              Invitation list
+              Invitation answers
             </Typography>
             {eventInvitations?.map((eventInvitation) => (
               <ListItem key={eventInvitation.id}>

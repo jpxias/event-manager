@@ -1,4 +1,5 @@
-import { Button } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { Button, IconButton, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import CreateEventModal from "../../components/CreateEventModal/CreateEventModal.component";
 import EventCard from "../../components/EventCard/EventCard.component";
@@ -8,17 +9,23 @@ import { useGraphQL } from "../../contexts/GraphQl.context";
 import { Event } from "../../generated/graphql";
 import { GraphQlSdk } from "../../graphql/GraphQlClient";
 import "./EventManager.css";
-
 const EventManagerScreen = () => {
   const { token } = useAuthContext();
   const [events, setEvents] = useState<Event[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [viewOnly, setViewOnly] = useState<boolean>(false);
+  const [filter, setFilter] = useState<string>();
   const { graphqlRequest } = useGraphQL();
 
   const fetchAllEvents = async () => {
-    const data = await graphqlRequest(GraphQlSdk.FindAllEvents, { filter: {} }, true);
+    const data = await graphqlRequest(
+      GraphQlSdk.FindAllEvents,
+      {
+        filter: filter || "",
+      },
+      true
+    );
     if (data) setEvents(data.findAllEvents);
   };
 
@@ -43,6 +50,10 @@ const EventManagerScreen = () => {
     setModalOpen(true);
   };
 
+  const searchEvent = () => {
+    fetchAllEvents();
+  };
+
   return (
     <>
       <CreateEventModal
@@ -58,7 +69,21 @@ const EventManagerScreen = () => {
 
       <div className="event-container">
         <TopBar />
-        <div style={{ display: "flex", width: "100%", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", width: "100%", justifyContent: "flex-end", alignItems: "center" }}>
+          <TextField
+            fullWidth
+            onChange={(e) => setFilter(e.target.value)}
+            style={{ padding: 10 }}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <IconButton onClick={() => searchEvent()}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              },
+            }}
+          />
           <Button variant="contained" onClick={() => editEvent(null)} style={{ margin: 20 }}>
             New event
           </Button>

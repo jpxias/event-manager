@@ -1,10 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, MongooseBaseQueryOptions, Types } from 'mongoose';
 
 import { BaseService } from 'src/base/base.service';
 import { Event } from './entities/event.entity';
-import { EventFilterInput } from './inputs/event-filter.input ';
 
 @Injectable()
 export class EventsService extends BaseService<Event> {
@@ -18,11 +21,30 @@ export class EventsService extends BaseService<Event> {
     userId: Types.ObjectId,
   ): Promise<Event | null> {
     updateData = { ...updateData, user: userId };
+    if (
+      updateData.startDate &&
+      updateData.endDate &&
+      updateData.startDate > updateData.endDate
+    ) {
+      throw new BadRequestException('End date must be after start date');
+    }
+
     return this.createOrUpdate(id, updateData);
   }
 
-  findAllEvents(filters: Partial<EventFilterInput>, userId: Types.ObjectId) {
-    filters = { ...filters, user: userId };
+  findAllEvents(filter: string, userId: Types.ObjectId) {
+    let filters: MongooseBaseQueryOptions = {
+      user: userId,
+    };
+    if (filter) {
+      filters = {
+        ...filters,
+        $or: [
+          { name: { $regex: filter, $options: 'i' } },
+          { description: { $regex: filter, $options: 'i' } },
+        ],
+      };
+    }
     return this.findAll(filters);
   }
 

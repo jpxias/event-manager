@@ -1,4 +1,4 @@
-query FindAllEvents($filter: EventFilterInput!) {
+query FindAllEvents($filter: String!) {
   findAllEvents(filter: $filter) {
     id
     name

@@ -44,14 +44,6 @@ export type Event = {
   user?: Maybe<Scalars['ID']['output']>;
 };
 
-export type EventFilterInput = {
-  description?: InputMaybe<Scalars['String']['input']>;
-  endDate?: InputMaybe<Scalars['DateTime']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  startDate?: InputMaybe<Scalars['DateTime']['input']>;
-  user?: InputMaybe<Scalars['ID']['input']>;
-};
-
 export type EventInvitation = {
   __typename?: 'EventInvitation';
   answer: InvitationAnswer;
@@ -120,12 +112,12 @@ export type Query = {
   findAllEvents: Array<Event>;
   findEventById?: Maybe<Event>;
   findEventInvitationsByEvent: Array<EventInvitation>;
-  findOneEventInvitationByEmail: EventInvitation;
+  findOneEventInvitationByEmail?: Maybe<EventInvitation>;
 };
 
 
 export type QueryFindAllEventsArgs = {
-  filter: EventFilterInput;
+  filter: Scalars['String']['input'];
 };
 
 
@@ -163,7 +155,7 @@ export type FindInvitationByEmailQueryVariables = Exact<{
 }>;
 
 
-export type FindInvitationByEmailQuery = { __typename?: 'Query', findOneEventInvitationByEmail: { __typename?: 'EventInvitation', id: string, email: string, answer: InvitationAnswer, event?: string | null } };
+export type FindInvitationByEmailQuery = { __typename?: 'Query', findOneEventInvitationByEmail?: { __typename?: 'EventInvitation', id: string, email: string, answer: InvitationAnswer, event?: string | null } | null };
 
 export type CreateOrUpdateEventInvitationMutationVariables = Exact<{
   setEventInvitation: EventInvitationInput;
@@ -180,7 +172,7 @@ export type FindEventInvitationsByEventQueryVariables = Exact<{
 export type FindEventInvitationsByEventQuery = { __typename?: 'Query', findEventInvitationsByEvent: Array<{ __typename?: 'EventInvitation', id: string, email: string, answer: InvitationAnswer, event?: string | null }> };
 
 export type FindAllEventsQueryVariables = Exact<{
-  filter: EventFilterInput;
+  filter: Scalars['String']['input'];
 }>;
 
 
@@ -244,7 +236,7 @@ export const FindEventInvitationsByEventDocument = gql`
 }
     `;
 export const FindAllEventsDocument = gql`
-    query FindAllEvents($filter: EventFilterInput!) {
+    query FindAllEvents($filter: String!) {
   findAllEvents(filter: $filter) {
     id
     name

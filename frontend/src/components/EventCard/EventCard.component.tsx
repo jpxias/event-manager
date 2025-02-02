@@ -1,6 +1,6 @@
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import { Card, CardContent, CardHeader, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, CardHeader, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { format } from "date-fns";
 import { useState } from "react";
 import { Event } from "../../generated/graphql";
@@ -44,44 +44,45 @@ const EventCard = ({ event, onClickCard, onClickEdit, onClickDelete }: IEventCar
 
   return (
     <Card className="event-card" onClick={() => onClickCard(event)}>
-      <CardHeader
-        action={
-          <>
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                "aria-labelledby": "long-button",
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleEdit}>Edit</MenuItem>
+      <CardActionArea>
+        <CardHeader
+          action={
+            <>
+              <IconButton
+                aria-label="more"
+                id="long-button"
+                aria-controls={open ? "long-menu" : undefined}
+                aria-expanded={open ? "true" : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                MenuListProps={{
+                  "aria-labelledby": "long-button",
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleEdit}>Edit</MenuItem>
 
-              <MenuItem onClick={handleDelete}>Delete</MenuItem>
-            </Menu>
-          </>
-        }
-        title={event.name}
-        // subheader={event.description}
-      />
-      <CardContent>
-        <Typography color="gray">{event.description}</Typography>
-        <div style={{ marginTop: 20 }}>
-          <Typography variant="body2">Start: {startDate}</Typography>
-          <Typography variant="body2">End: {endDate}</Typography>
-        </div>
-      </CardContent>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+              </Menu>
+            </>
+          }
+          title={event.name}
+        />
+        <CardContent>
+          <Typography color="gray">{event.description}</Typography>
+          <div style={{ marginTop: 50, display: "flex", gap: 10 }}>
+            <Typography variant="body2">Start: {startDate}</Typography>
+            <Typography variant="body2">End: {endDate}</Typography>
+          </div>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };

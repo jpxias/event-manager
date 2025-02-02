@@ -38,18 +38,10 @@ enum InvitationAnswer {
 }
 
 type Query {
-  findAllEvents(filter: EventFilterInput!): [Event!]!
+  findAllEvents(filter: String!): [Event!]!
   findEventById(id: ID!): Event
   findOneEventInvitationByEmail(eventInvitation: EventInvitationFilterInput!): EventInvitation
   findEventInvitationsByEvent(eventInvitation: EventInvitationFilterInput!): [EventInvitation!]!
-}
-
-input EventFilterInput {
-  name: String
-  description: String
-  startDate: DateTime
-  endDate: DateTime
-  user: ID
 }
 
 input EventInvitationFilterInput {

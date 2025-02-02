@@ -6,7 +6,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/users/entities/user.entity';
 import { Event } from './entities/event.entity';
 import { EventsService } from './events.service';
-import { EventFilterInput } from './inputs/event-filter.input ';
 import { CreateEventInput } from './inputs/event.input';
 
 @Resolver('Event')
@@ -15,10 +14,7 @@ export class EventsResolver {
 
   @Query(() => [Event])
   @UseGuards(JwtAuthGuard)
-  findAllEvents(
-    @Args('filter') filter: EventFilterInput,
-    @CurrentUser() user: User,
-  ) {
+  findAllEvents(@Args('filter') filter: string, @CurrentUser() user: User) {
     return this.eventsService.findAllEvents(filter, user._id);
   }
 

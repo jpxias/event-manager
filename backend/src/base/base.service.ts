@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Model, MongooseBaseQueryOptions, Types } from 'mongoose';
 
 export class BaseService<T> {
   constructor(private readonly model: Model<T>) {}
@@ -26,7 +26,7 @@ export class BaseService<T> {
     return this.model.findOne(filters).exec();
   }
 
-  findAll(filters: Partial<T> = {}): Promise<T[]> {
+  findAll(filters: MongooseBaseQueryOptions = {}): Promise<T[]> {
     return this.model.find(filters).exec();
   }
 
